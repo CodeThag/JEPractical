@@ -14,7 +14,7 @@ public class MovieDto : PartialMovieDto
     public string Country { get; set; }
     public string Awards { get; set; }
     public List<Rating> Ratings { get; set; }
-    public int Metascore { get; set; }
+    public string Metascore { get; set; }
     public double ImdbRating { get; set; }
 	public string ImdbVotes { get; set; }
 	public string DVD { get;set; }

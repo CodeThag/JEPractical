@@ -27,10 +27,7 @@ public class IntegrationRequestHandler : IIntegrationRequestHandler
 
         var result = await GetResponse<MovieDto>(url);
 
-        if (!result.Response || result == null)
-            return null;
-
-        return result;
+        return !result.Response || result == null ? null : result;
     }
 
     public async Task<MovieDto> GetMovieByTitleAsync(string name)
@@ -39,11 +36,7 @@ public class IntegrationRequestHandler : IIntegrationRequestHandler
 
         var result = await GetResponse<MovieDto>(url);
 
-        if (!result.Response || result == null)
-            return null;
-
-        return result;
-
+        return !result.Response || result == null ? null : result;
     }
 
     public async Task<PaginatedList<PartialMovieDto>> GetSearchResultAsync(string q, string? type, int? year, int page = 1)
@@ -59,8 +52,8 @@ public class IntegrationRequestHandler : IIntegrationRequestHandler
 
         var result = await GetResponse<SearchResponse>(url);
 
-        if (!result.Response || result == null)
-            return null;
+        if (result == null || !result.Response)
+            return default(PaginatedList<PartialMovieDto>);
 
         return PaginatedList<PartialMovieDto>.Create(result.Search, page, result.TotalResults);
     }

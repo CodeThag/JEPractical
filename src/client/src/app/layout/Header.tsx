@@ -1,5 +1,6 @@
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
+import { Link, NavLink } from 'react-router-dom';
 import CustomSearchInput from '../components/CustomSearchInput';
 
 interface Props {
@@ -19,14 +20,12 @@ const navStyles = {
     }
 }
 
-
-
 const Header = ({ darkMode, handleThemeChange }: Props) => {
     return (
         <AppBar position='static' sx={{ mb: 4 }}>
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box display='flex' alignItems='center'>
-                    <Typography variant='h6'
+                    <Typography variant='h6' component={NavLink} to="/"
                         sx={navStyles}>
                         Movie Catalog
                     </Typography>
