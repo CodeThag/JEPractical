@@ -1,5 +1,8 @@
-import { Card, CardMedia, CardContent, Typography, CardActions, Button, Grid } from '@mui/material';
+import { Share } from '@mui/icons-material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Card, CardMedia, CardContent, Typography, CardActions, Grid, IconButton } from '@mui/material';
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { Movie } from '../../app/models/Movie';
 
 interface Props {
@@ -8,7 +11,7 @@ interface Props {
 
 const MovieCard = ({ movie }: Props) => {
     return (
-        <Grid container component={Card}>
+        <Grid container component={Card} sx={{ width: 570 }}>
             <Grid item xs={3}>
                 <CardMedia
                     component="img"
@@ -30,8 +33,12 @@ const MovieCard = ({ movie }: Props) => {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small">Share</Button>
-                    <Button size="small">View</Button>
+                    <IconButton size="small">
+                        <Share />
+                    </IconButton>
+                    <IconButton size="small" component={Link} to={`/movies/${movie.imdbID}`}>
+                        <VisibilityIcon />
+                    </IconButton>
                 </CardActions>
             </Grid>
         </Grid>

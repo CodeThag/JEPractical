@@ -22,36 +22,55 @@ public class MoviesController : BaseApiController
     [HttpGet("Search")]
     public async Task<ActionResult<PaginatedList<PartialMovieDto>>> Search(string query, string? type, int? year, int page = 1)
     {
+        if (string.IsNullOrEmpty(query))
+        {
+            return null;
+        }
+
+        SaveSearchAsync(query); // Don't wait for response
+
         var result = await _handler.GetSearchResultAsync(query, type, year, page);
 
-        SaveSearchAsync(query);
+        if (null == result)
+            return new PaginatedList<PartialMovieDto>(new List<PartialMovieDto>(), 0, 0); // send empty Paginator
+
 
         return result;
     }
 
     [HttpGet("GetMovieById")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<ActionResult<MovieDto>> GetMovieById(string id)
     {
         var result = await _handler.GetMovieByIdAsync(id);
 
-        return result;
+        return !result.Response ? NotFound() : result;
     }
 
     [HttpGet("GetMovieByTitle")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<ActionResult<MovieDto>> GetMovieByTitle(string name)
     {
         var result = await _handler.GetMovieByTitleAsync(name);
 
-        return result;
+        return null != result ? NotFound() : result;
     }
 
     [HttpGet("FetchPreviousSearch")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<ActionResult<List<PreviousSearch>>> FetchPreviousSearch()
     {
-        return await _context.PreviousSearches
+        var result = await _context.PreviousSearches
             .Where(x => x.CreatedBy == GetUserId())
             .OrderByDescending(x => x.Created).Take(5)
             .ToListAsync();
+        return result;
     }
 
     private async Task SaveSearchAsync(string query, CancellationToken cancellationToken = new CancellationToken())
@@ -61,7 +80,10 @@ public class MoviesController : BaseApiController
             query = query.Trim();
             var item = _context.PreviousSearches.FirstOrDefault(x => x.Keyword == query && x.CreatedBy == GetUserId());
             if (null == item)
-                _context.PreviousSearches.Add(new PreviousSearch() { Keyword = query, CreatedBy = GetUserId(), Created = DateTime.Now });
+            {
+                item = new PreviousSearch() { Keyword = query, CreatedBy = GetUserId(), Created = DateTime.Now };
+                _context.PreviousSearches.Add(item);
+            }
             else
                 item.Created = DateTime.Now; // Update the order of the history
 
