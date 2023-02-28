@@ -28,7 +28,7 @@ const PreviousSearchPanel = ({ search }: Props) => {
             {previousSearch.length > 0 ? (
                 <Paper sx={{ mb: 2, p: 2 }}>
                     {previousSearch.map(s => (
-                        <Link to={`/movies/search/${s.keyword}`}>
+                        <Link to={`/movies/search/${s.keyword}`} key={s.id}>
                             <Typography key={s.id} variant='body1'>
                                 {s.keyword}
                             </Typography>

@@ -15,7 +15,7 @@ public class MovieDto : PartialMovieDto
     public string Awards { get; set; }
     public List<Rating> Ratings { get; set; }
     public string Metascore { get; set; }
-    public double ImdbRating { get; set; }
+    public string ImdbRating { get; set; }
 	public string ImdbVotes { get; set; }
 	public string DVD { get;set; }
     public string BoxOffice { get; set; }

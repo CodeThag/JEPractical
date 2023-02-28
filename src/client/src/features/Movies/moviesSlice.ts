@@ -48,8 +48,6 @@ function getSearchParams(searchParams: MovieSearchParams) {
   if (searchParams.year) params.append("year", searchParams.year.toString());
   if (searchParams.type) params.append("type", searchParams.type);
 
-  console.log(searchParams);
-  console.log(params);
   return params;
 }
 
@@ -61,12 +59,10 @@ export const searchMoviesAsync = createAsyncThunk<
   const params = getSearchParams(thunkAPI.getState().movies.searchParams);
   try {
     const response = await agent.Movies.search(params);
-    console.log(response);
     // Add Pagination data here
     thunkAPI.dispatch(setPaginatorData(response));
     return response.items;
   } catch (error: any) {
-    console.log(error);
     return thunkAPI.rejectWithValue({ error: error.data });
   }
 });
@@ -75,8 +71,7 @@ export const fetchMovieDetailsAsync = createAsyncThunk<MovieExtended, string>(
   "movies/fetchMovieDetailsAsync",
   async (id, thunkAPI) => {
     try {
-      const response = await agent.Movies.fetchDetailsById(id);
-      return response;
+      return await agent.Movies.fetchDetailsById(id);
     } catch (error: any) {
       console.log(error);
       return thunkAPI.rejectWithValue({ error: error.data });
@@ -88,9 +83,7 @@ export const fetchPreviousSearchAsync = createAsyncThunk(
   "movies/fetchPreviousSearchAsync",
   async (_, thunkAPI) => {
     try {
-      var response = await agent.Movies.fetchPreviousSearch();
-      console.log(response);
-      return response;
+      return await agent.Movies.fetchPreviousSearch();
     } catch (error: any) {
       console.log(error);
       return thunkAPI.rejectWithValue({ error: error.data });
@@ -127,7 +120,6 @@ export const moviesSlice = createSlice({
       state.moviesLoaded = false;
     });
     builder.addCase(searchMoviesAsync.fulfilled, (state, action) => {
-      // productsAdapter.setAll(state, action.payload);
       state.status = "idle";
       state.moviesLoaded = true;
       state.movies = action.payload;
@@ -135,7 +127,6 @@ export const moviesSlice = createSlice({
     });
     builder.addCase(searchMoviesAsync.rejected, (state, action) => {
       state.status = "idle";
-      console.log(action.payload);
     });
 
     // Handle previous search
@@ -149,7 +140,6 @@ export const moviesSlice = createSlice({
     });
     builder.addCase(fetchPreviousSearchAsync.rejected, (state, action) => {
       state.status = "idle";
-      console.log(action.payload);
       state.previousSearchLoaded = true; // Prevent continues request
     });
 
@@ -166,7 +156,6 @@ export const moviesSlice = createSlice({
     });
     builder.addCase(fetchMovieDetailsAsync.rejected, (state, action) => {
       state.status = "idle";
-      console.log(action.payload);
       state.movieLoaded = true;
     });
   },
